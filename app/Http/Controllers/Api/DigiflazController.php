@@ -39,6 +39,7 @@ class DigiflazController extends Controller
 
         // return response()->json($response);
         $data = json_decode($response->getBody(), true);
-        return response()->json($data['data']);
+        $this->model->insert_data($data['data']);
+        // return response()->json($data['data']);
     }
 }
