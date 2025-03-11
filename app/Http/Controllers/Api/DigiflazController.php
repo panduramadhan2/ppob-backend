@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\ProductPasca;
 use App\Models\ProductPrepaid;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
@@ -14,6 +15,7 @@ class DigiflazController extends Controller
     protected $user = null;
     protected $key = null;
     protected $model = null;
+    protected $model_pasca = null;
     public function __construct()
     {
         $this->header = array(
@@ -25,6 +27,7 @@ class DigiflazController extends Controller
         $this->key = env('DIGIFLAZ_KEY');
 
         $this->model = new ProductPrepaid();
+        $this->model_pasca = new ProductPasca();
     }
     public function get_product_prepaid()
     {
@@ -41,5 +44,20 @@ class DigiflazController extends Controller
         $data = json_decode($response->getBody(), true);
         $this->model->insert_data($data['data']);
         // return response()->json($data['data']);
+    }
+
+    public function get_product_pasca()
+    {
+        $response = Http::withHeaders($this->header)->post($this->url . '/price-list', [
+            "cmd" => "pasca",
+            // "cmd" => "pasca",
+            "username" => $this->user,
+            "sign" => md5($this->user . $this->key . "pricelist")
+        ]);
+
+        // return response()->json($response);
+        $data = json_decode($response->getBody(), true);
+        // return response()->json($data['data']);
+        $this->model_pasca->insert_data($data['data']);
     }
 }

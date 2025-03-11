@@ -21,4 +21,5 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::controller(DigiflazController::class)->prefix('product')->group(function () {
     Route::post('/get-product-prepaid', 'get_product_prepaid');
+    Route::post('/get-product-pasca', 'get_product_pasca');
 });
