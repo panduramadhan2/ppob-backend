@@ -28,7 +28,8 @@ class DigiflazController extends Controller
 
         $this->url = env('DIGIFLAZ_URL');
         $this->user = env('DIGIFLAZ_USER');
-        $this->key = env('DIGIFLAZ_DEV_KEY');
+        $this->key = env('DIGIFLAZ_MODE') == 'development' ? env('DIGIFLAZ_DEV_KEY') : env('DIGIFLAZ_PROD_KEY');
+        // $this->key = env('DIGIFLAZ_PROD_KEY');
 
         $this->model = new ProductPrepaid();
         $this->model_pasca = new ProductPasca();
@@ -87,6 +88,7 @@ class DigiflazController extends Controller
         $data = json_decode($response->getBody(), true);
 
         // Return API response
-        return response()->json($data['data']);
+        // return response()->json($data['data']);
+        return response()->json($data);
     }
 }
