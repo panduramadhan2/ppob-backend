@@ -96,29 +96,21 @@ class DigiflazController extends Controller
         // return response()->json($data['data']);
         return response()->json($data['data']);
     }
-    // public function digiflazTopup(Request $request)
-    // {
-    //     $ref_id = $this->getCode();
-    //     $product = ProductPrepaid::findProductBySKU($request->sku)->first();
-    //     $sign = md5($this->user . $this->key . $ref_id);
 
-    //     $response = Http::withHeaders($this->header)->post($this->url . '/transaction', [
-    //         "username" => $this->user,
-    //         "buyer_sku_code" => $request->sku,
-    //         "customer_no" => $request->customer_no,
-    //         "ref_id" => $ref_id,
-    //         "sign" => $sign
-    //     ]);
+    public function digiflazCekTagihan(Request $request)
+    {
+        $ref_id = $this->getCode();
+        $sign = md5($this->user . $this->key . $ref_id);
+        $response = Http::withHeaders($this->header)->post($this->url . '/transaction', [
+            "commands" => "inq-pasca",
+            "username" => $this->user,
+            "buyer_sku_code" => $request->sku,
+            "customer_no" => $request->customer_no,
+            "ref_id" => $ref_id,
+            "sign" => $sign
+        ]);
 
-    //     $data = json_decode($response->getBody(), true);
-
-    //     // Pastikan data['data'] ada sebelum menyimpannya
-    //     if (isset($data['data'])) {
-    //         $this->model_transaction->insert_transaction_data($data['data'], 'Prepaid', $product->product_provider);
-    //     } else {
-    //         Log::error("Gagal menyimpan transaksi: " . json_encode($data));
-    //     }
-
-    //     return response()->json($data['data']);
-    // }
+        $data = json_decode($response->getBody(), true);
+        return response()->json($data['data']);
+    }
 }

@@ -37,7 +37,7 @@ class ProductPasca extends Model
         }
         self::upsert(
             $insertData,
-            ['product sku'],
+            ['product_sku'],
             [
                 'product_name',
                 'product_category',
