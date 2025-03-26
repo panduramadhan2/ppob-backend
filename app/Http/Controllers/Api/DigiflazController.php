@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\ProductPasca;
 use App\Models\ProductPrepaid;
+use App\Models\TransactionModel;
 use App\Traits\CodeGenerate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
@@ -20,6 +21,7 @@ class DigiflazController extends Controller
     protected $key = null;
     protected $model = null;
     protected $model_pasca = null;
+    protected $model_transaction = null;
     public function __construct()
     {
         $this->header = array(
@@ -33,6 +35,7 @@ class DigiflazController extends Controller
 
         $this->model = new ProductPrepaid();
         $this->model_pasca = new ProductPasca();
+        $this->model_transaction = new TransactionModel();
     }
     public function get_product_prepaid()
     {
@@ -69,6 +72,7 @@ class DigiflazController extends Controller
     public function digiflazTopup(Request $request)
     {
         $ref_id = $this->getCode();
+        $product = ProductPrepaid::findProductBySKU($request->sku)->first();
         $sign = md5($this->user . $this->key . $ref_id);
 
         // Debugging logs
@@ -86,9 +90,35 @@ class DigiflazController extends Controller
         ]);
 
         $data = json_decode($response->getBody(), true);
+        $this->model_transaction->insert_transaction_data($data['data'], 'Prepaid', $product->product_provider);
 
         // Return API response
         // return response()->json($data['data']);
-        return response()->json($data);
+        return response()->json($data['data']);
     }
+    // public function digiflazTopup(Request $request)
+    // {
+    //     $ref_id = $this->getCode();
+    //     $product = ProductPrepaid::findProductBySKU($request->sku)->first();
+    //     $sign = md5($this->user . $this->key . $ref_id);
+
+    //     $response = Http::withHeaders($this->header)->post($this->url . '/transaction', [
+    //         "username" => $this->user,
+    //         "buyer_sku_code" => $request->sku,
+    //         "customer_no" => $request->customer_no,
+    //         "ref_id" => $ref_id,
+    //         "sign" => $sign
+    //     ]);
+
+    //     $data = json_decode($response->getBody(), true);
+
+    //     // Pastikan data['data'] ada sebelum menyimpannya
+    //     if (isset($data['data'])) {
+    //         $this->model_transaction->insert_transaction_data($data['data'], 'Prepaid', $product->product_provider);
+    //     } else {
+    //         Log::error("Gagal menyimpan transaksi: " . json_encode($data));
+    //     }
+
+    //     return response()->json($data['data']);
+    // }
 }

@@ -26,6 +26,12 @@ class ProductPrepaid extends Model
         'product_multi',
     ];
 
+
+    public function scopeFindProductBySKU($query, $value)
+    {
+        $query->where('product_sku', $value);
+    }
+
     public function insert_data($data)
     {
         $insertData = [];

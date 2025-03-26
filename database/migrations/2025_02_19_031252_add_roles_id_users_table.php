@@ -26,4 +26,16 @@ return new class extends Migration
             $table->dropColumn('roles_id');
         });
     }
+
+//     public function down()
+// {
+//     Schema::table('users', function (Blueprint $table) {
+//         if (Schema::hasTable('users')) { // Cek apakah tabel ada
+//             if (Schema::hasColumn('users', 'roles_id')) { // Cek apakah kolom ada
+//                 $table->dropForeign(['roles_id']); // Hapus foreign key jika ada
+//                 $table->dropColumn('roles_id'); // Hapus kolom jika ada
+//             }
+//         }
+//     });
+// }
 };
