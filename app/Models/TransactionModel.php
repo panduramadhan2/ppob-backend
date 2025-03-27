@@ -48,6 +48,12 @@ class TransactionModel extends Model
     // }
     public function insert_transaction_data($data, $type, $provider)
     {
+        $harga = 0;
+        if ($type == 'Prepaid') {
+            $harga = isset($data['price']) ? $data['price'] : 0;
+        } else {
+            $harga = isset($data['selling_price']) ? $data['selling_price'] : 0;
+        }
         try {
             return self::create([
                 'transaction_code' => $data['ref_id'],
@@ -57,8 +63,8 @@ class TransactionModel extends Model
                 'transaction_provider' => $provider,
                 'transaction_number' => $data['customer_no'],
                 'transaction_sku' => $data['buyer_sku_code'],
-                // 'transaction_total' => isset($data['price']) ? $data['price'] : 0,
-                'transaction_total' => 0,
+                'transaction_total' => $harga,
+                // 'transaction_total' => 0,
                 // 'transaction_message' => $data['message'] ?? 'Tidak ada pesan',
                 'transaction_message' => $data['message'],
                 // 'transaction_status' => $data['status'] ?? 'Gagal',

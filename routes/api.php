@@ -24,4 +24,5 @@ Route::controller(DigiflazController::class)->prefix('product')->group(function 
     Route::post('/get-product-pasca', 'get_product_pasca');
     Route::post('/topup', 'digiflazTopup');
     Route::post('/cek-tagihan', 'digiflazCekTagihan');
+    Route::post('/bayar-tagihan', 'digiflazBayarTagihan');
 });

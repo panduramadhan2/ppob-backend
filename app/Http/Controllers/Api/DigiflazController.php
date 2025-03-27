@@ -112,5 +112,26 @@ class DigiflazController extends Controller
 
         $data = json_decode($response->getBody(), true);
         return response()->json($data['data']);
+        //Tambahkan fitur validasi
+    }
+
+    public function digiflazBayarTagihan(Request $request)
+    {
+        $product = ProductPasca::FindBySKU($request->sku)->first();
+        $sign = md5($this->user . $this->key . $request->ref_id);
+        $response = Http::withHeaders($this->header)->post($this->url . '/transaction', [
+            "commands" => "pay-pasca",
+            "username" => $this->user,
+            "buyer_sku_code" => $request->sku,
+            "customer_no" => $request->customer_no,
+            "ref_id" => $request->ref_id,
+            "sign" => $sign
+        ]);
+
+        $data = json_decode($response->getBody(), true);
+        $this->model_transaction->insert_transaction_data($data['data'], 'Pasca', $product->product_provider);
+
+        return response()->json($data['data']);
+        //Tambahkan fitur validasi
     }
 }
