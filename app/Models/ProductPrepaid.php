@@ -32,6 +32,11 @@ class ProductPrepaid extends Model
         $query->where('product_sku', $value);
     }
 
+    public function scopeFindPruductByProvider($query, $provider, $type = null)
+    {
+        $query->where('product_category', $type)->where('product_provider', $provider);
+    }
+
     public function insert_data($data)
     {
         $insertData = [];
