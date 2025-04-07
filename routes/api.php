@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\DigiflazController;
+use App\Http\Controllers\Api\MidtransController;
 use App\Http\Controllers\Api\ProductController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -31,9 +32,13 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::post('/topup', 'digiflazTopup');
         Route::post('/cek-tagihan', 'digiflazCekTagihan');
         Route::post('/bayar-tagihan', 'digiflazBayarTagihan');
+        Route::post('/get-saldo', 'getSaldoUser');
     });
 
     Route::controller(ProductController::class)->prefix('product')->group(function () {
         Route::post('/get-product-pulsa', 'index');
+    });
+    Route::controller(MidtransController::class)->prefix('midtrans')->group(function () {
+        Route::post('/topup', 'create');
     });
 });

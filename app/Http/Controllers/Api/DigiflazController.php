@@ -6,8 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Models\ProductPasca;
 use App\Models\ProductPrepaid;
 use App\Models\TransactionModel;
+use App\Models\User;
 use App\Traits\CodeGenerate;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
@@ -132,6 +134,32 @@ class DigiflazController extends Controller
         $this->model_transaction->insert_transaction_data($data['data'], 'Pasca', $product->product_provider);
 
         return response()->json($data['data']);
+        //Tambahkan fitur validasi
+    }
+
+    public function getSaldoUser(Request $request)
+    {
+        $saldo = 0;
+        $sign = md5($this->user . $this->key . 'depo');
+        $response = Http::withHeaders($this->header)->post($this->url . '/cek-saldo', [
+            "cmd" => "deposit",
+            "username" => $this->user,
+            "sign" => $sign
+        ]);
+
+        $data = json_decode($response->getBody(), true);
+
+        if (Auth::user()->roles_id == 1) {
+            $saldo = $data['data']['deposit'];
+        } else {
+            $user_saldo = User::with('saldo')->where('id', Auth::user()->id)->first();
+            $saldo = isset($user_saldo->saldo) ? $user_saldo->saldo->user_last_saldo : 0;
+            // gunakan ini lebih aman
+            // $saldo = optional($user_saldo->saldo)->user_last_saldo ?? 0;
+
+        }
+
+        return response()->json($saldo);
         //Tambahkan fitur validasi
     }
 }
