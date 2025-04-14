@@ -42,3 +42,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::post('/topup', 'create');
     });
 });
+
+Route::post(
+    '/midtrans-webhook',
+    [MidtransController::class, 'midtrans_hook']
+);
